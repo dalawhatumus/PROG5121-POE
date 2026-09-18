@@ -7,12 +7,18 @@ import java.util.Scanner;
  * Walks the user through registration, then requires a successful login.
  * Console only, as required by the brief (no GUI / no JOptionPane).
  *
+ * Flow: read and validate each field one at a time, register the user once
+ * all fields are valid, then loop on the login step until the credentials
+ * match. All validation is delegated to the Login class so this file only
+ * deals with input and output.
+ *
  * Module:  PROG5121 - Programming 1A
  * Student: Abdalla Adel (ST10536920)
  */
 public class QuickChatApp {
 
     public static void main(String[] args) {
+        // Scanner reads the user's keyboard input; Login holds the logic.
         Scanner scanner = new Scanner(System.in);
         Login login = new Login();
 
@@ -22,6 +28,7 @@ public class QuickChatApp {
         String firstName = prompt(scanner, "Enter your first name: ");
         String lastName = prompt(scanner, "Enter your last name: ");
 
+        // Username loop: repeat until checkUserName() accepts the input.
         String username;
         do {
             username = prompt(scanner, "Choose a username "
@@ -34,6 +41,7 @@ public class QuickChatApp {
         } while (!login.checkUserName(username));
         System.out.println("Username successfully captured.");
 
+        // Password loop: repeat until all four complexity rules are met.
         String password;
         do {
             password = prompt(scanner, "Choose a password "
@@ -47,6 +55,7 @@ public class QuickChatApp {
         } while (!login.checkPasswordComplexity(password));
         System.out.println("Password successfully captured.");
 
+        // Cell number loop: repeat until the +27 format is matched.
         String cellPhone;
         do {
             cellPhone = prompt(scanner, "Enter your cell number "
@@ -63,7 +72,8 @@ public class QuickChatApp {
                 firstName, lastName, username, password, cellPhone);
         System.out.println(registrationResult);
 
-        // Login stage: verify credentials before granting access.
+        // Login stage: verify credentials before granting access. The loop
+        // keeps prompting until returnLoginStatus reports a successful match.
         System.out.println("\n=== QuickChat Login ===");
         boolean loggedIn = false;
         while (!loggedIn) {
@@ -74,6 +84,7 @@ public class QuickChatApp {
         }
 
         System.out.println("\nYou are now logged in. (Messaging features arrive in Part 2.)");
+        // Close the scanner to release the input resource.
         scanner.close();
     }
 
