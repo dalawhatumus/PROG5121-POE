@@ -7,6 +7,11 @@ package com.quickchat;
  *   checkUserName(), checkPasswordComplexity(), checkCellPhoneNumber(),
  *   registerUser(), loginUser() and returnLoginStatus().
  *
+ * Design approach: each validation rule lives in its own small method that
+ * returns a boolean. registerUser() calls those methods in turn so the
+ * validation logic is written once and reused by both the app and the unit
+ * tests. This keeps the class easy to test and easy to read.
+ *
  * Note on message wording: the brief's specification table and its
  * assertEquals test table use slightly different strings in a few places.
  * Where a string is checked by a marked assertEquals test, this class
@@ -15,6 +20,7 @@ package com.quickchat;
 public class Login {
 
     // Stored registration details, kept so loginUser() can compare against them.
+    // These stay empty until a successful registerUser() call fills them in.
     private String registeredFirstName = "";
     private String registeredLastName = "";
     private String registeredUsername = "";
@@ -35,9 +41,11 @@ public class Login {
      * "kyl_1" is exactly five characters and passes under this reading.
      */
     public boolean checkUserName(String username) {
+        // Guard against a null input so the checks below never throw.
         if (username == null) {
             return false;
         }
+        // Both conditions must hold: an underscore is present and length <= 5.
         return username.contains("_") && username.length() <= 5;
     }
 
@@ -47,14 +55,18 @@ public class Login {
      * character.
      */
     public boolean checkPasswordComplexity(String password) {
+        // Guard against a null input.
         if (password == null) {
             return false;
         }
+        // Each rule is checked separately, then combined at the end, so the
+        // requirement each boolean represents is easy to read.
         boolean atLeastEight = password.length() >= 8;
         boolean hasCapital = password.matches(".*[A-Z].*");
         boolean hasNumber = password.matches(".*\\d.*");
         // Any character that is not a letter, digit or whitespace is "special".
         boolean hasSpecial = password.matches(".*[^a-zA-Z0-9\\s].*");
+        // All four rules must pass for the password to be valid.
         return atLeastEight && hasCapital && hasNumber && hasSpecial;
     }
 
@@ -72,6 +84,7 @@ public class Login {
      * [Accessed 1 September 2026].
      */
     public boolean checkCellPhoneNumber(String cellPhoneNumber) {
+        // Guard against a null input.
         if (cellPhoneNumber == null) {
             return false;
         }
@@ -83,6 +96,10 @@ public class Login {
     /**
      * Validates and, if everything is correct, stores the new user's details.
      * Returns a message describing the outcome.
+     *
+     * The three checks run in order (username, then password, then cell
+     * number). The first one that fails returns its own error message, so the
+     * user is told about one problem at a time.
      */
     public String registerUser(String firstName, String lastName, String username,
                                String password, String cellPhoneNumber) {
@@ -117,6 +134,8 @@ public class Login {
      * details captured during registration.
      */
     public boolean loginUser(String username, String password) {
+        // Both fields must be non-null and must equal the stored credentials.
+        // The result is remembered so returnLoginStatus() can reuse it.
         lastLoginSuccessful = username != null
                 && password != null
                 && username.equals(registeredUsername)
@@ -129,6 +148,7 @@ public class Login {
      * of the most recent loginUser() call.
      */
     public String returnLoginStatus(String username, String password) {
+        // Re-run the credential check, then pick the matching message.
         if (loginUser(username, password)) {
             return "Welcome " + registeredFirstName + ", " + registeredLastName
                     + " it is great to see you again.";
