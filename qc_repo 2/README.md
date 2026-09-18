@@ -1,8 +1,8 @@
-# QuickChat (PROG5121 POE) - Part 1
+# QuickChat (PROG5121 POE) — Part 1
 
 **Student:** Abdalla Adel
 **Student Number:** ST10536920
-**Module:** PROG5121 - Programming 1A
+**Module:** PROG5121 — Programming 1A
 
 A console application for registering and logging in users. This is the first of three parts. Part 1 covers account registration, input validation, and login.
 
@@ -33,7 +33,7 @@ pom.xml                 Maven build with JUnit 5
 ## The Login methods
 
 | Method | What it does |
-|---|---|
+| --- | --- |
 | `checkUserName` | Returns true when the username has an underscore and is five characters or fewer. |
 | `checkPasswordComplexity` | Returns true when the password meets all four complexity rules. |
 | `checkCellPhoneNumber` | Returns true when the number matches the +27 format. |
@@ -43,14 +43,16 @@ pom.xml                 Maven build with JUnit 5
 
 ## Running it
 
-With Maven and a JDK installed:
+The project is built with Maven and opened in IntelliJ IDEA.
+
+To run the app in IntelliJ: open the project folder, then open `QuickChatApp.java` and run the `main` method.
+
+To run it from the command line with Maven and a JDK installed:
 
 ```
 mvn compile
 mvn exec:java -Dexec.mainClass=com.quickchat.QuickChatApp
 ```
-
-Or open the folder in NetBeans and run `QuickChatApp`.
 
 ## Running the tests
 
@@ -58,7 +60,7 @@ Or open the folder in NetBeans and run `QuickChatApp`.
 mvn test
 ```
 
-The tests use the exact input and output values from the assessment brief, so they double as a check that the app behaves the way the marking guide expects.
+In IntelliJ you can also right-click `LoginTest.java` and choose Run. The tests use the exact input and output values from the assessment brief, so they double as a check that the app behaves the way the marking guide expects.
 
 ## A note on message wording
 
