@@ -1,0 +1,10 @@
+target/
+*.class
+.idea/
+*.iml
+.vscode/
+nbproject/
+nbactions.xml
+
+# Generated at runtime when messages are stored (Part 2)
+stored_messages.json
