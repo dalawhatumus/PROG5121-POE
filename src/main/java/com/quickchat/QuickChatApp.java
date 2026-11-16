@@ -80,9 +80,14 @@ public class QuickChatApp {
         scanner.close();
     }
 
+    // Part 3: holds the sent, stored and disregarded message arrays for the
+    // whole session, so the "Stored Messages" menu can report on them.
+    private static final MessageReport report = new MessageReport();
+
     /**
-     * Part 2 messaging menu. Displays the welcome message once, then loops on a
-     * numeric menu (1 send, 2 coming soon, 3 quit) until the user quits.
+     * Messaging menu (Parts 2 and 3). Displays the welcome message once, then
+     * loops on a numeric menu until the user quits. Option 4, "Stored Messages"
+     * (Part 3), opens the array-based reporting features.
      */
     private static void runMessagingMenu(Scanner scanner) {
         System.out.println("\nWelcome to QuickChat.");
@@ -93,8 +98,9 @@ public class QuickChatApp {
             System.out.println("1) Send Messages");
             System.out.println("2) Show recently sent messages");
             System.out.println("3) Quit");
+            System.out.println("4) Stored Messages");
 
-            String choice = prompt(scanner, "Enter your choice (1-3): ");
+            String choice = prompt(scanner, "Enter your choice: ");
 
             switch (choice) {
                 case "1":
@@ -106,13 +112,68 @@ public class QuickChatApp {
                 case "3":
                     running = false;
                     break;
+                case "4":
+                    storedMessagesMenu(scanner);
+                    break;
                 default:
-                    System.out.println("Invalid option. Please enter 1, 2 or 3.");
+                    System.out.println("Invalid option. Please enter 1, 2, 3 or 4.");
             }
         }
 
         System.out.println("\nTotal messages sent: " + new Message(0, "", "").returnTotalMessages());
         System.out.println("Goodbye.");
+    }
+
+    /**
+     * Part 3 "Stored Messages" menu. Loads any messages saved to the JSON file,
+     * then lets the user display, search, delete and report on the arrays.
+     */
+    private static void storedMessagesMenu(Scanner scanner) {
+        // Pull any messages stored to JSON into the stored-messages array.
+        report.loadStoredFromJson();
+
+        boolean inMenu = true;
+        while (inMenu) {
+            System.out.println("\n--- Stored Messages ---");
+            System.out.println("a) Display sender and recipient of all sent messages");
+            System.out.println("b) Display the longest sent message");
+            System.out.println("c) Search for a message ID");
+            System.out.println("d) Search for messages by recipient");
+            System.out.println("e) Delete a message using its hash");
+            System.out.println("f) Display the full report");
+            System.out.println("g) Back to main menu");
+
+            String choice = prompt(scanner, "Enter your choice (a-g): ").toLowerCase();
+
+            switch (choice) {
+                case "a":
+                    System.out.println(report.displaySendersAndRecipients());
+                    break;
+                case "b":
+                    System.out.println("Longest message: " + report.displayLongestMessage());
+                    break;
+                case "c":
+                    String id = prompt(scanner, "Enter the message ID: ");
+                    System.out.println(report.searchByMessageID(id));
+                    break;
+                case "d":
+                    String rec = prompt(scanner, "Enter the recipient cell number: ");
+                    System.out.println(report.searchByRecipient(rec));
+                    break;
+                case "e":
+                    String hash = prompt(scanner, "Enter the message hash: ");
+                    System.out.println(report.deleteByHash(hash));
+                    break;
+                case "f":
+                    System.out.println(report.displayReport());
+                    break;
+                case "g":
+                    inMenu = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please enter a to g.");
+            }
+        }
     }
 
     /**
@@ -159,6 +220,16 @@ public class QuickChatApp {
             System.out.println("3) Store Message to send later");
             int action = readPositiveInt(scanner, "Enter your choice (1-3): ");
             System.out.println(message.sentMessage(action));
+
+            // Part 3: flag the message and add it to the arrays for reporting.
+            if (action == 1) {
+                message.setFlag("Sent");
+            } else if (action == 2) {
+                message.setFlag("Disregarded");
+            } else if (action == 3) {
+                message.setFlag("Stored");
+            }
+            report.addMessage(message);
 
             // Show the full details of the message, in the required order.
             System.out.println("\n" + message.printMessages());
