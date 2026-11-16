@@ -4,7 +4,7 @@
 **Student Number:** ST10536920
 **Module:** PROG5121 — Programming 1A
 
-A console messaging application built over the three POE parts. Part 1 covers account registration, input validation, and login. Part 2 adds the messaging feature: a menu, sending a set number of messages, building a message hash, and storing messages in a JSON file.
+A console messaging application built over the three POE parts. Part 1 covers account registration, input validation, and login. Part 2 adds the messaging feature: a menu, sending a set number of messages, building a message hash, and storing messages in a JSON file. Part 3 adds arrays and a task report: the messages are kept in arrays, read back from the JSON file, and can be searched, deleted, and listed in a report.
 
 ## What it does
 
@@ -32,10 +32,12 @@ src/main/java/com/quickchat/
     Login.java          Part 1 validation and login logic (six required methods)
     Message.java        Part 2 message logic (ID, recipient, hash, send/store, totals)
     MessageStore.java   Stores and reads messages as JSON (using Gson)
+    MessageReport.java  Part 3 arrays and report (search, longest, delete, report)
     QuickChatApp.java   Console entry point (registration, login, messaging menu)
 src/test/java/com/quickchat/
-    LoginTest.java      JUnit 5 tests for Part 1, using the brief's test data
-    MessageTest.java    JUnit 5 tests for Part 2, using the brief's test data
+    LoginTest.java         JUnit 5 tests for Part 1, using the brief's test data
+    MessageTest.java       JUnit 5 tests for Part 2, using the brief's test data
+    MessageReportTest.java JUnit 5 tests for Part 3, using the brief's test data
 .github/workflows/
     TestJava.yml        Runs all the tests on every push (GitHub Actions)
 pom.xml                 Maven build with JUnit 5 and Gson
@@ -63,6 +65,21 @@ pom.xml                 Maven build with JUnit 5 and Gson
 | `printMessages` | Returns the full message details in the required order (ID, hash, recipient, message). |
 | `returnTotalMessages` | Returns the total number of messages sent in this run. |
 | `storeMessage` (in `MessageStore`) | Writes the message to a JSON file. |
+
+## The Stored Messages features (Part 3)
+
+Part 3 adds a fourth menu option, **Stored Messages**, which works with the message arrays (`MessageReport`):
+
+| Feature | What it does |
+|---|---|
+| Display senders and recipients | Lists the recipient of every sent message. |
+| Longest message | Finds and displays the longest message. |
+| Search by message ID | Returns the recipient and message for a given ID. |
+| Search by recipient | Returns all messages for a given recipient. |
+| Delete by message hash | Removes a message using its hash and confirms the deletion. |
+| Display report | Lists the full details (hash, recipient, message) of all sent messages. |
+
+The stored-messages array is populated by reading the JSON file saved in Part 2 back into an array, using Gson (attributed in `MessageStore`).
 
 ## Running it
 
