@@ -28,6 +28,7 @@ public class Message {
     private final String recipient;      // recipient cell number (+27...)
     private final String messageText;    // the message body (max 250 chars)
     private String messageHash;          // auto-generated hash, set on build
+    private String flag = "Sent";        // Part 3: Sent, Stored or Disregarded
 
     /**
      * Builds a message. The message ID is generated automatically; the message
@@ -194,6 +195,21 @@ public class Message {
 
     public String getMessageHash() {
         return messageHash;
+    }
+
+    /**
+     * Returns this message's flag (Part 3): "Sent", "Stored" or "Disregarded".
+     */
+    public String getFlag() {
+        return flag;
+    }
+
+    /**
+     * Sets this message's flag (Part 3). Used when populating the arrays so each
+     * message is placed in the correct list.
+     */
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 
     /**
